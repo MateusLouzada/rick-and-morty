@@ -1,53 +1,33 @@
-import React from 'react'
-import { useEffect } from 'react';
-import { useState } from 'react';
+import React from 'react';
+import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import Characters from './routes/Characters'
+import Episodes from './routes/Episodes'
+import Locations from './routes/Locations'
+import './App.css';
+
 
 export default function App() {
 
-  const [characters, setCharacters] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  let arrayCharacter = [];
-
-  useEffect(() => {
-    fetch(`https://rickandmortyapi.com/api/character`)
-      .then(res => res.json())
-      .then(data => {
-        //console.log(data)
-        const pages = data.info.pages;
-        const temp = data.results;
-        temp.forEach(character => {
-          arrayCharacter.push(character)
-        });
-        for (let i = 0; i < pages - 1; i++) {
-          const url = 'https://rickandmortyapi.com/api/character?page=' + String(i + 2)
-          fetch(url)
-            .then(res => res.json())
-            .then(data => {
-              const charactersOthersPages = data.results;
-              charactersOthersPages.forEach(character => {
-                arrayCharacter.push(character)
-                if (arrayCharacter.length === data.info.count) {
-                  setCharacters(arrayCharacter)
-                  arrayCharacter.sort((a,b) => {
-                    if(a.id > b.id) return 1
-                    if(a.id < b.id) return -1
-                  })
-                  setIsLoaded(true)
-                }
-              })
-            })
-        }
-
-      })
-  }, [])
-
-  if (isLoaded != true) {
-    return <div>Loading...</div>
-  } else {
-    return (
-      <div>{characters[800].name}</div>
-    )
-  }
+  return (
+    <div>
+      <Router>
+        <div className='nav'>
+          <div className='image'>
+            <img src="../assets/img/logo.png" alt="Logo rick and morty" />
+          </div>
+          <ul className='nav-inside'>
+            <li><Link to="/"><button>Characters</button></Link></li>
+            <li><Link to="episodes"><button>Episodes</button></Link></li>
+            <li><Link to="locations"><button>Locations</button></Link></li>
+          </ul>
+        </div>
+        <Routes>
+          <Route path="/" element={<Characters />} />
+          <Route path="episodes" element={<Episodes />} />
+          <Route path="locations" element={<Locations />} />
+        </Routes>
+      </Router>
+    </div>
+  )
 
 }
