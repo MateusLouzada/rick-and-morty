@@ -28,6 +28,7 @@
 
 .inside-card-episode {
     margin: 0.5rem 0;
+    text-align: center;
 }
 
 .card:hover {
@@ -41,6 +42,13 @@
     border-radius: 10px 10px 0 0;
 }
 
-.card-name {
+.card-name p {
     margin: 0.5rem 0;
+    text-align: center;
+}
+
+@media only screen and (max-width: 400px) {
+    .card-name p{
+    font-size: 0.6rem;
+    }
 }
