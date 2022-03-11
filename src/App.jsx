@@ -11,7 +11,7 @@ export default function App() {
 
   return (
     <div>
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <div className='nav'>
           <div className='image'>
             <img src="../assets/img/logo.png" alt="Logo rick and morty" />
