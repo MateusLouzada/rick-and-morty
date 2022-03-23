@@ -11,8 +11,8 @@ export default function Locations() {
   let countVerification = -1;
   let locationsShow = [];
 
-  const getLocations = () => {
-    fetch(`https://rickandmortyapi.com/api/location`)
+  const getLocations = async () => {
+    await fetch(`https://rickandmortyapi.com/api/location`)
       .then((res) => res.json())
       .then((data) => {
         const pages = data.info.pages;
@@ -23,34 +23,35 @@ export default function Locations() {
         for (let i = 0; i < pages - 1; i++) {
           const url =
             "https://rickandmortyapi.com/api/location?page=" + String(i + 2);
-          fetch(url)
-            .then((res) => res.json())
-            .then((data) => {
-              const locationsOtherPages = data.results;
-              locationsOtherPages.forEach((location) => {
-                arrayLocations.push(location);
-                countVerification = Number(data.info.count);
-                if (arrayLocations.length === data.info.count) {
-                  arrayLocations.sort((a, b) => {
-                    if (a.id > b.id) return 1;
-                    if (a.id < b.id) return -1;
-                  });
-                  setLocations(arrayLocations);
-                  setIsLoaded(true);
-                }
-              });
-            });
+          getOthersLocations(url);
         }
+      });
+  };
+
+  const getOthersLocations = async (url) => {
+    await fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        const locationsOtherPages = data.results;
+        locationsOtherPages.forEach((location) => {
+          arrayLocations.push(location);
+          countVerification = Number(data.info.count);
+          if (arrayLocations.length === data.info.count) {
+            arrayLocations.sort((a, b) => {
+              if (a.id > b.id) return 1;
+              if (a.id < b.id) return -1;
+            });
+            setLocations(arrayLocations);
+            setIsLoaded(true);
+          }
+        });
       });
   };
 
   const card = (location, key) => {
     const { name, type } = location;
     return (
-      <div
-        key={key}
-        className="card card-episode"
-      >
+      <div key={key} className="card card-episode">
         <div className="inside-card-episode">
           <Typography>{name}</Typography>
         </div>
@@ -91,10 +92,6 @@ export default function Locations() {
     );
   } else {
     //console.log(locations[0])
-    return (
-      <div className="container">
-        {locationShow}
-      </div>
-    );
+    return <div className="container">{locationShow}</div>;
   }
 }

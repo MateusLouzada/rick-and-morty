@@ -11,8 +11,8 @@ export default function Episodes() {
   let countVerification = -1;
   let episodesShow = [];
 
-  const getEpisodes = () => {
-    fetch(`https://rickandmortyapi.com/api/episode`)
+  const getEpisodes = async () => {
+    await fetch(`https://rickandmortyapi.com/api/episode`)
       .then((res) => res.json())
       .then((data) => {
         const pages = data.info.pages;
@@ -23,35 +23,35 @@ export default function Episodes() {
         for (let i = 0; i < pages - 1; i++) {
           const url =
             "https://rickandmortyapi.com/api/episode?page=" + String(i + 2);
-          fetch(url)
-            .then((res) => res.json())
-            .then((data) => {
-              const episodesOtherPages = data.results;
-              episodesOtherPages.forEach((episode) => {
-                arrayEpisodes.push(episode);
-                countVerification = Number(data.info.count);
-                if (arrayEpisodes.length === data.info.count) {
-                  arrayEpisodes.sort((a, b) => {
-                    if (a.id > b.id) return 1;
-                    if (a.id < b.id) return -1;
-                  });
-                  setEpisodes(arrayEpisodes);
-                  setIsLoaded(true);
-                }
-              });
-            });
+          getOthersEpisodes(url);
         }
       });
   };
 
+  const getOthersEpisodes = async (url) => {
+    await fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        const episodesOtherPages = data.results;
+        episodesOtherPages.forEach((episode) => {
+          arrayEpisodes.push(episode);
+          countVerification = Number(data.info.count);
+          if (arrayEpisodes.length === data.info.count) {
+            arrayEpisodes.sort((a, b) => {
+              if (a.id > b.id) return 1;
+              if (a.id < b.id) return -1;
+            });
+            setEpisodes(arrayEpisodes);
+            setIsLoaded(true);
+          }
+        });
+      });
+  };
 
   const card = (episodeInside, key) => {
     const { episode, name } = episodeInside;
     return (
-      <div
-        key={key}
-        className="card card-episode"
-      >
+      <div key={key} className="card card-episode">
         <div className="inside-card-episode">
           <Typography>{episode}</Typography>
         </div>

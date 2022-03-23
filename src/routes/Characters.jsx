@@ -14,8 +14,8 @@ export default function Characters() {
   let countCharacters = -1;
   let charactersShow = [];
 
-  const getCharacters = () => {
-    fetch(`https://rickandmortyapi.com/api/character`)
+  const getCharacters = async () => {
+    await fetch(`https://rickandmortyapi.com/api/character`)
       .then((res) => res.json())
       .then((data) => {
         const pages = data.info.pages;
@@ -26,24 +26,28 @@ export default function Characters() {
         for (let i = 0; i < pages - 1; i++) {
           const url =
             "https://rickandmortyapi.com/api/character?page=" + String(i + 2);
-          fetch(url)
-            .then((res) => res.json())
-            .then((data) => {
-              const charactersOthersPages = data.results;
-              charactersOthersPages.forEach((character) => {
-                arrayCharacter.push(character);
-                countCharacters = Number(data.info.count);
-                if (arrayCharacter.length === countCharacters) {
-                  arrayCharacter.sort((a, b) => {
-                    if (a.id > b.id) return 1;
-                    if (a.id < b.id) return -1;
-                  });
-                  setCharacters(arrayCharacter);
-                  setIsLoaded(true);
-                }
-              });
-            });
+          getOtherCharacters(url);
         }
+      });
+  };
+
+  const getOtherCharacters = async (url) => {
+    await fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        const charactersOthersPages = data.results;
+        charactersOthersPages.forEach((character) => {
+          arrayCharacter.push(character);
+          countCharacters = Number(data.info.count);
+          if (arrayCharacter.length === countCharacters) {
+            arrayCharacter.sort((a, b) => {
+              if (a.id > b.id) return 1;
+              if (a.id < b.id) return -1;
+            });
+            setCharacters(arrayCharacter);
+            setIsLoaded(true);
+          }
+        });
       });
   };
 
@@ -97,7 +101,7 @@ export default function Characters() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: '500px'
+          height: "500px",
         }}
       >
         Loading...
