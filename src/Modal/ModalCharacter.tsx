@@ -1,6 +1,7 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import "./ModalStyle.css";
+import { objectCharacter } from "../routes/Characters";
 
 const style = {
   display: "flex",
@@ -21,13 +22,16 @@ const style = {
   color: "#EAEAEA",
 };
 
-export default function ModalCharacter({
-  openModal,
-  setOpenModal,
-  characterModal,
-}) {
+type PropsModal = {
+  openModal: boolean,
+  setOpenModal: Dispatch<SetStateAction<boolean>>,
+  characterModal: objectCharacter,
+}
+
+export default function ModalCharacter(props: PropsModal) {
+  const {openModal, setOpenModal, characterModal} = props
   const handleCloseModal = () => setOpenModal(false);
-  const { name, gender, image, location, origin, species, status, episode } =
+  const { name, gender, image, location, origin, species, status } =
     characterModal;
   return (
     <div>
